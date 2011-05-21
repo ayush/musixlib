@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<project xmlns:ivy="antlib:org.apache.ivy.ant" name="musicxmatch" default="build" basedir=".">
+    <property name="scala.home" value="/usr/local/scala-2.8.1.final"/>
+
+    <property name="sources.dir" value="${basedir}/src/main/scava"/>
+    <property name="build.dir" value="${basedir}/build"/>
+    <property name="docs.dir" value="${basedir}/docs"/>
+
+    <target name="init">
+        <property
+                name="scala-library.jar"
+                value="${scala.home}/lib/scala-library.jar"/>
+
+        <path id="build.classpath">
+            <pathelement location="${scala-library.jar}"/>
+            <pathelement location="${build.dir}"/>
+        </path>
+
+        <taskdef resource="scala/tools/ant/antlib.xml">
+            <classpath>
+                <pathelement location="${scala.home}/lib/scala-compiler.jar"/>
+                <pathelement location="${scala-library.jar}"/>
+            </classpath>
+        </taskdef>
+    </target>
+
+    <target name="build" depends="init">
+        <mkdir dir="${build.dir}"/>
+        <scalac srcdir="${sources.dir}"
+                destdir="${build.dir}"
+                classpathref="build.classpath">
+            <include name="**/*.scala"/>
+        </scalac>
+    </target>
+
+    <target name="docs" depends="init">
+        <mkdir dir="${docs.dir}"/>
+        <scaladoc
+                srcdir="${sources.dir}"
+                destdir="${docs.dir}"
+                deprecation="yes" unchecked="yes"
+                doctitle="musicxmatch 0.1 library"
+                classpathref="build.classpath">
+            <include name="**/*.scala"/>
+        </scaladoc>
+    </target>
+
+    <target name="resolve" description="--> retrieve dependencies with ivy">
+        <ivy:retrieve type="jar"/>
+    </target>
+
+</project>
