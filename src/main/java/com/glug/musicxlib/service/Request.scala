@@ -1,5 +1,7 @@
+package com.glug.musicxlib.service
+
 /*
- * Copyright (c) 2011 Ayush Gupta
+ * Copyright (c) 2011 Ayush Gupta (http://glugbot.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
  *
@@ -7,8 +9,6 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-
-package com.glug.musicxlib.request
 
 import com.glug.musicxlib.util.AsQueryString
 
@@ -22,24 +22,22 @@ import com.glug.musicxlib.util.AsQueryString
   * @param q_track words to be searched among tracks titles
   * @param q_artist words to be searched among artists names
   * @param q_lyrics words to be searched into the lyrics
-  * @param format desired output format
   * @param page requested page of results
   * @param page_size desired number of items per result page
   * @param f_has_lyrics exclude artists without any available lyrics (automatic if q_lyrics is set)
   * @param f_artist_id filter the results by the artist_id
   * @param f_artist_mbid filter the results by the artist_mbid
   */
-class ArtistSearchRequest(var q: String,
-                          var q_track: String,
-                          var q_artist: String,
-                          var q_lyrics: String,
-                          var format: String,
-                          var page: Number,
-                          var page_size: Number,
-                          var f_has_lyrics: Boolean,
-                          var f_artist_id: String,
-                          var f_artist_mbid: String) extends AsQueryString {
-  def this() = this (null, null, null, null, null, -1, -1, false, null, null)
+class SearchArtist(var q: String = null,
+                   var q_track: String = null,
+                   var q_artist: String = null,
+                   var q_lyrics: String = null,
+                   var f_has_lyrics: String = null,
+                   var f_artist_id: String = null,
+                   var f_artist_mbid: String = null,
+                   var page: Number = -1,
+                   var page_size: Number = -1) extends AsQueryString {
+  def this() = this (null, null, null, null, null, null, null, -1, -1)
 }
 
 /**
@@ -54,7 +52,6 @@ class ArtistSearchRequest(var q: String,
   * @param q_artist words to be searched among artist names
   * @param q_track_artist words to be searched among track titles or artist names
   * @param q_lyrics words to be searched into the lyrics
-  * @param format desired output format
   * @param page requested page of results
   * @param page_size desired number of items per result page
   * @param f_has_lyrics exclude tracks without an available lyrics (automatic if q_lyrics is set)
@@ -62,18 +59,18 @@ class ArtistSearchRequest(var q: String,
   * @param f_artist_mbid filter the results by the artist_mbid
   * @param quorum_factor only works together with q and q_track_artist parameter. Possible values goes from 0.1 to 0.9. A value of 0.9 means: “match at least 90% of the given words”.
   */
-class TrackSearchRequest(var q: String,
-                         var q_track: String,
-                         var q_artist: String,
-                         var q_track_artist: String,
-                         var q_lyrics: String,
-                         var format: String,
-                         var page: Number,
-                         var page_size: Number,
-                         var f_has_lyrics: Boolean,
-                         var f_artist_id: String,
-                         var f_artist_mbid: String,
-                         var quorum_factor: String) {
+class SearchTrack(var q: String = null,
+                  var q_track: String = null,
+                  var q_artist: String = null,
+                  var q_track_artist: String = null,
+                  var q_lyrics: String = null,
+                  var f_has_lyrics: String = null,
+                  var f_artist_id: String = null,
+                  var f_artist_mbid: String = null,
+                  var quorum_factor: String = null,
+                  var page: Number = -1,
+                  var page_size: Number = -1) extends AsQueryString {
+  def this() = this (null, null, null, null, null, null, null, null, null, -1, -1)
 
 }
 
@@ -90,7 +87,7 @@ class TrackSearchRequest(var q: String,
   *
   * @param trackId track_id | track_mbid | track_echonest_id: the track identifier expressed as a musiXmatch ID, musicbrainz ID or echonest ID
   */
-class TrackGetRequest(var trackId: String) {
+class GetTrack(var track_id: String) extends AsQueryString {
 
 }
 
@@ -100,17 +97,15 @@ class TrackGetRequest(var trackId: String) {
   * @author Ayush Gupta
   * @since May 21st 2011
   *
-  * @param format desired output format
   * @param page requested page of results
   * @param page_size desired number of items per result page
   * @param country the country code of the desired country chart (refer to [[input-parameters]] page for allowed values)
   * @param f_has_lyrics exclude tracks without an available lyrics */
-class TrackChartGetRequest(var page: Number,
-                           var page_size: Number,
-                           var country: String,
-                           var f_has_lyrics: Boolean
-                            ) {
-
+class GetTrackChart(var country: String = null,
+                    var f_has_lyrics: String = null,
+                    var page: Number = -1,
+                    var page_size: Number = -1) extends AsQueryString {
+  def this() = this(null, null, -1, -1)
 }
 
 
@@ -124,11 +119,11 @@ class TrackChartGetRequest(var page: Number,
   * @param track_id the track identifier
   * @param feedback one of the support feedback type (please refer to the input parameters page)
   **/
-class TrackLyricsFeedbackPostRequest(var lyrics_id: String,
-                                     var track_id: String,
-                                     var feedback: String
+class PostTrackLyricsFeedback(var lyrics_id: String,
+                              var track_id: String,
+                              var feedback: String
 
-                                      ) {
+                               ) extends AsQueryString {
 
 }
 
@@ -143,13 +138,11 @@ class TrackLyricsFeedbackPostRequest(var lyrics_id: String,
   * @param q_duration search for a track duration
   * @param q_album the name of the album
   **/
-class MatcherTrackGetRequest(var q_track: String,
-                             var q_artist: String,
-                             var q_duration: String,
-                             var q_album: String
-
-                              ) {
-
+class GetMatcherTrack(var q_track: String = null,
+                      var q_artist: String = null,
+                      var q_album: String = null,
+                      var q_duration: String = null) extends AsQueryString {
+  def this() = this (null, null, null, null)
 }
 
 
@@ -161,9 +154,8 @@ class MatcherTrackGetRequest(var q_track: String,
   *
   * @param artistId artist_id | artist_mbid : the artist identifier expressed as a musiXmatch ID or musicbrainz ID
   **/
-class ArtistGetRequest(var artistId: String
-                        ) {
-
+class GetArtist(var artist_id: String) extends AsQueryString {
+  def this() = this (null)
 }
 
 
@@ -174,19 +166,18 @@ class ArtistGetRequest(var artistId: String
   * @since May 21st 2011
   *
   * @param artist_id the album identifier expressed as a musiXmatch ID
-  * @param format the desired output format
   * @param page requested page of results
   * @param page_size desired number of items per page
   * @param g_album_name group albums by name to avoid duplicates
   * @param s_release_date sort by release date (desc/asc)
   **/
-class ArtistAlbumsGetRequest(var artist_id: String,
-                             var format: String,
-                             var page: Number,
-                             var page_size: Number,
-                             var g_album_name: String,
-                             var s_release_date: String
-                              ) {
+class GetArtistAlbums(var artist_id: String,
+                      var page: Number = -1,
+                      var page_size: Number = -1,
+                      var g_album_name: String = "1",
+                      var s_release_date: String = null
+                       ) extends AsQueryString {
+  def this() = this (null, -1, -1, "1", null)
 
 }
 
@@ -200,10 +191,10 @@ class ArtistAlbumsGetRequest(var artist_id: String,
   * @param page_size desired number of items per result page
   * @param country the <a href="https://developer.musixmatch.com/documentation/input-parameters">country code</a> of the desired country chart
   **/
-class ArtistChartGetRequest(var page: Number,
-                            var page_size: Number,
-                            var country: String
-                             ) {
+class GetArtistChart(var country: String = null,
+                     var page: Number = -1,
+                     var page_size: Number = -1) extends AsQueryString {
+  def this() = this (null, -1, -1)
 
 }
 
@@ -221,8 +212,8 @@ class ArtistChartGetRequest(var page: Number,
   *
   * @param album_id the album identifier expressed as a musiXmatch ID
   **/
-class AlbumGetRequest(var album_id: String) {
-
+class GetAlbum(var album_id: String) extends AsQueryString {
+  def this() = this (null)
 }
 
 

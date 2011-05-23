@@ -4,6 +4,7 @@
     <configurations>
     	<conf name="core"  description="only provide core library"/>
     	<conf name="test" extends="core" visibility="private" description="for testing the library"/>
+    	<conf name="scala-lang" visibility="private" description="scala compile and library"/>
     </configurations>
 
     <publications>
@@ -12,6 +13,12 @@
 
     <dependencies>
         <dependency org="com.google.code.gson" name="gson" rev="1.7.1" conf="core->default"/>
+        <dependency org="org.slf4j" name="slf4j-api" rev="1.6.1" conf="core->default"/>
+        <dependency org="org.slf4j" name="slf4j-simple" rev="1.6.1" conf="core->default"/>
+
         <dependency org="org.scalatest" name="scalatest_2.9.0" rev="1.4.1" conf="test->default"/>
+
+        <dependency org="org.scala-lang" name="scala-compiler" rev="2.9.0" conf="scala-lang->default"/>
+        <dependency org="org.scala-lang" name="scala-library" rev="2.9.0" conf="scala-lang->default"/>
     </dependencies>
 </ivy-module>
