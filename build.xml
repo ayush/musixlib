@@ -1,10 +1,18 @@
 <?xml version="1.0"?>
-<project xmlns:ivy="antlib:org.apache.ivy.ant" name="musicxmatch" default="build" basedir=".">
-    <property name="scala.home" value="/usr/local/scala-2.8.1.final"/>
+<project xmlns:ivy="antlib:org.apache.ivy.ant" name="musixlib" default="build" basedir=".">
+    <property name="scala.home" value="/usr/local/scala-2.9.0.final"/>
 
-    <property name="sources.dir" value="${basedir}/src/main/scava"/>
-    <property name="build.dir" value="${basedir}/build"/>
-    <property name="docs.dir" value="${basedir}/docs"/>
+    <property name="revision" value="0.1"/>
+    <property name="sources.dir" value="src/main/java"/>
+    <property name="docs.dir" value="docs"/>
+    <property name="core.lib.dir" value="lib/core"/>
+    <property name="base.build.dir" value="build"/>
+    <property name="build.dir" value="build/core-classes"/>
+    <property name="distrib.dir" value="build/distrib"/>
+
+    <property name="test.lib.dir" value="lib/test"/>
+    <property name="test.sources.dir" value="src/test/java"/>
+    <property name="test.build.dir" value="build/test-classes"/>
 
     <target name="init">
         <property
@@ -14,6 +22,18 @@
         <path id="build.classpath">
             <pathelement location="${scala-library.jar}"/>
             <pathelement location="${build.dir}"/>
+            <fileset dir="${core.lib.dir}">
+                <include name="**/*.jar"/>
+            </fileset>
+        </path>
+
+        <path id="test.build.classpath">
+            <pathelement location="${scala-library.jar}"/>
+            <pathelement location="${build.dir}"/>
+            <pathelement location="${test.build.dir}"/>
+            <fileset dir="${test.lib.dir}">
+                <include name="**/*.jar"/>
+            </fileset>
         </path>
 
         <taskdef resource="scala/tools/ant/antlib.xml">
@@ -22,15 +42,29 @@
                 <pathelement location="${scala-library.jar}"/>
             </classpath>
         </taskdef>
+
+        <taskdef name="scalatest" classname="org.scalatest.tools.ScalaTestAntTask">
+            <classpath refid="test.build.classpath"/>
+        </taskdef>
+
     </target>
 
-    <target name="build" depends="init">
+    <target name="build" depends="resolve, init">
         <mkdir dir="${build.dir}"/>
+        <mkdir dir="${distrib.dir}"/>
+
         <scalac srcdir="${sources.dir}"
                 destdir="${build.dir}"
                 classpathref="build.classpath">
             <include name="**/*.scala"/>
         </scalac>
+
+        <jar destfile="${distrib.dir}/${ant.project.name}.jar">
+            <fileset dir="${build.dir}">
+                <include name="**/*.class"/>
+            </fileset>
+        </jar>
+
     </target>
 
     <target name="docs" depends="init">
@@ -39,14 +73,54 @@
                 srcdir="${sources.dir}"
                 destdir="${docs.dir}"
                 deprecation="yes" unchecked="yes"
-                doctitle="musicxmatch 0.1 library"
+                doctitle="Musicxmatch 0.1 library"
                 classpathref="build.classpath">
             <include name="**/*.scala"/>
         </scaladoc>
     </target>
 
+    <target name="publish" depends="clean, test"
+            description="--> compile test and publish this project in the local ivy repository">
+        <property name="revision" value="${revision}"/>
+        <ivy:publish artifactspattern="${distrib.dir}/[artifact].[ext]"
+                     resolver="local"
+                     pubrevision="${revision}"
+                     status="release"
+                     overwrite="true"/>
+        <echo message="project ${ant.project.name} released with version ${revision}"/>
+    </target>
+
+
     <target name="resolve" description="--> retrieve dependencies with ivy">
-        <ivy:retrieve type="jar"/>
+        <ivy:retrieve pattern="${ivy.lib.dir}/[conf]/[artifact]-[revision].[ext]" type="jar"/>
+    </target>
+
+    <target name="clean">
+        <delete dir="${base.build.dir}"/>
+        <delete dir="${docs.dir}"/>
+    </target>
+
+    <target name="test" depends="build">
+        <mkdir dir="${test.build.dir}"/>
+
+        <scalac srcdir="${test.sources.dir}"
+                destdir="${test.build.dir}"
+                classpathref="test.build.classpath">
+            <include name="**/*.scala"/>
+        </scalac>
+
+        <scalatest>
+            <!--<runpath refid="test.build.classpath"/>-->
+
+            <runpath>
+                <pathelement location="${build.dir}"/>
+                <pathelement location="${test.build.dir}"/>
+                <fileset dir="${test.lib.dir}">
+                    <include name="**/*.jar"/>
+                </fileset>
+            </runpath>
+            <wildcard package="com.glug.musixlib"/>
+        </scalatest>
     </target>
 
 </project>
