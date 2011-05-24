@@ -11,6 +11,7 @@
 package com.glug.musicxlib.util
 
 import java.lang.StringBuffer
+import java.net.URLEncoder
 
 
 /*
@@ -28,7 +29,7 @@ trait AsQueryString {
       if (value != null && !value.toString.trim().equals("-1")) {
         if (buff.length() > 0)
           buff.append("&")
-        buff.append(field.getName + "=" + value)
+        buff.append(field.getName + "=" + URLEncoder.encode(value.toString, "UTF-8"))
       }
 
     }

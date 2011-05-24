@@ -46,18 +46,14 @@ class MusixMatchService(val apiKey: String) {
     * Search for artists
     */
   def search(artistSearchRequest: SearchArtist) = {
-    val jsonResponse = call(makeApiUrl(SEARCH_ARTIST, artistSearchRequest))
-//    LOGGER.info("got " + jsonResponse)
-    GSON.fromJson(jsonResponse, classOf[ServiceResponse])
+    call(makeApiUrl(SEARCH_ARTIST, artistSearchRequest))
   }
 
   /**
     * Get details on a specific artist
     */
   def getArtist(req: GetArtist) = {
-    val jsonResponse = call(makeApiUrl(GET_ARTIST, req))
-//    LOGGER.info("got " + jsonResponse)
-    GSON.fromJson(jsonResponse, classOf[ServiceResponse])
+    call(makeApiUrl(GET_ARTIST, req))
   }
 
 
@@ -65,9 +61,7 @@ class MusixMatchService(val apiKey: String) {
     * Get albums of a specific artist
     */
   def getArtistAlbums(req: GetArtistAlbums) = {
-    val jsonResponse = call(makeApiUrl(GET_ARTIST_ALBUMS, req))
-//    LOGGER.info("got " + jsonResponse)
-    GSON.fromJson(jsonResponse, classOf[ServiceResponse])
+    call(makeApiUrl(GET_ARTIST_ALBUMS, req))
   }
 
   /**
@@ -75,9 +69,7 @@ class MusixMatchService(val apiKey: String) {
     * Get a specific album
     */
   def getAlbum(req: GetAlbum) = {
-    val jsonResponse = call(makeApiUrl(GET_ALBUM, req))
-//    LOGGER.info("got " + jsonResponse)
-    GSON.fromJson(jsonResponse, classOf[ServiceResponse])
+    call(makeApiUrl(GET_ALBUM, req))
   }
 
   /**
@@ -85,9 +77,7 @@ class MusixMatchService(val apiKey: String) {
     * Get tracks of an album
     */
   def getAlbumTracks(req: GetAlbum) = {
-    val jsonResponse = call(makeApiUrl(GET_ALBUM_TRACKS, req))
-//    LOGGER.info("got " + jsonResponse)
-    GSON.fromJson(jsonResponse, classOf[ServiceResponse])
+    call(makeApiUrl(GET_ALBUM_TRACKS, req))
   }
 
 
@@ -96,9 +86,7 @@ class MusixMatchService(val apiKey: String) {
     * Get charts for a specific artist
     */
   def getArtistCharts(req: GetArtistChart) = {
-    val jsonResponse = call(makeApiUrl(GET_ARTIST_CHART, req))
-//    LOGGER.info("got " + jsonResponse)
-    GSON.fromJson(jsonResponse, classOf[ServiceResponse])
+    call(makeApiUrl(GET_ARTIST_CHART, req))
   }
 
 
@@ -107,9 +95,7 @@ class MusixMatchService(val apiKey: String) {
     * Look for tracks
     */
   def getMatcherTrack(req: GetMatcherTrack) = {
-    val jsonResponse = call(makeApiUrl(GET_MATCHER_TRACK, req))
-//    LOGGER.info("got " + jsonResponse)
-    GSON.fromJson(jsonResponse, classOf[ServiceResponse])
+    call(makeApiUrl(GET_MATCHER_TRACK, req))
   }
 
   /**
@@ -117,9 +103,7 @@ class MusixMatchService(val apiKey: String) {
     * Get charts for tracks
     */
   def getTrackCharts(req: GetTrackChart) = {
-    val jsonResponse = call(makeApiUrl(GET_TRACK_CHART, req))
-//    LOGGER.info("got " + jsonResponse)
-    GSON.fromJson(jsonResponse, classOf[ServiceResponse])
+    call(makeApiUrl(GET_TRACK_CHART, req))
   }
 
   /**
@@ -127,9 +111,7 @@ class MusixMatchService(val apiKey: String) {
     * Search for tracks
     */
   def search(req: SearchTrack) = {
-    val jsonResponse = call(makeApiUrl(SEARCH_TRACK, req))
-//    LOGGER.info("got " + jsonResponse)
-    GSON.fromJson(jsonResponse, classOf[ServiceResponse])
+    call(makeApiUrl(SEARCH_TRACK, req))
   }
 
 
@@ -138,9 +120,7 @@ class MusixMatchService(val apiKey: String) {
     * Get track
     */
   def getTrack(req: GetTrack) = {
-    val jsonResponse = call(makeApiUrl(GET_TRACK, req))
-//    LOGGER.info("got " + jsonResponse)
-    GSON.fromJson(jsonResponse, classOf[ServiceResponse])
+    call(makeApiUrl(GET_TRACK, req))
   }
 
   /**
@@ -148,18 +128,34 @@ class MusixMatchService(val apiKey: String) {
     * Get lyrics
     */
   def getLyrics(req: GetTrack) = {
-    val jsonResponse = call(makeApiUrl(GET_TRACK_LYRICS, req))
-//    LOGGER.info("got " + jsonResponse)
-    GSON.fromJson(jsonResponse, classOf[ServiceResponse])
+    call(makeApiUrl(GET_TRACK_LYRICS, req))
   }
 
 
   private def makeApiUrl(apiName: String, qsObject: AsQueryString) = apiEndpoint + apiName + "?apikey=" + apiKey + "&format=json&" + qsObject.queryString()
 
   private def call(url: String) = {
-    LOGGER.info("Calling " + url)
+//    LOGGER.info("Calling " + url)
 
-    io.Source.fromURL(url).mkString
+    val jsonResponse = io.Source.fromURL(url).mkString
+//    LOGGER.info("got " + jsonResponse)
+
+    val aux = GSON.fromJson(jsonResponse, classOf[AuxServiceResponse])
+    aux.check
+
+    try {
+      if (aux.is404) {
+        val r = new ServiceResponse
+        r.message = new Message
+        r.message.header = aux.message.header
+        r
+      } else
+        GSON.fromJson(jsonResponse, classOf[ServiceResponse])
+    }
+    catch {
+      case e: Exception => LOGGER.error("Unable to unmarshall json " + jsonResponse, e); throw e
+    }
+
   }
 
 }

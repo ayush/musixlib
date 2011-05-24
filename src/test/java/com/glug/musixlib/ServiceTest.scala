@@ -21,7 +21,7 @@ import com.glug.musicxlib.service._
 class ServiceTest extends FunSuite {
 
   private def service: MusixMatchService = {
-    new MusixMatchService("your-key")
+    new MusixMatchService("741422372f12076301e6f5ef02c07862")
   }
 
 
@@ -116,12 +116,11 @@ class ServiceTest extends FunSuite {
   }
 
 
-//  test("is able to get track lyrics") {
-//    val serviceResponse = service.getLyrics(new GetTrack("673092"))
-//
-//    val track = serviceResponse.message.body.track
-//    assert(track != null, "Unable to fetch track")
-//    assert(track.track_id.equals("673092") && track.track_mbid.equals("1e3668b5-3053-40f7-8bda-0ba987b37cbe"), "track id did not match the expected one")
-//  }
+  test("is able to get track lyrics for Faith") {
+    val serviceResponse = service.getLyrics(new GetTrack("745388"))
+
+    assert(serviceResponse.message.body.lyrics != null && serviceResponse.message.body.lyrics.lyrics_body != null)
+
+  }
 
 }
