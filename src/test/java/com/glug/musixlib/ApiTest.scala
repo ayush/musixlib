@@ -12,17 +12,17 @@ package com.glug.musixlib
 
 import scala.collection.JavaConversions._
 import org.scalatest.FunSuite
-import com.glug.musicxlib.api.MusixMatch
+import com.glug.musixlib.api.MusixMatch
 /*
  * User: ayush
  * Date: 5/24/11
  * Time: 9:08 AM
  */
 class ApiTest extends FunSuite {
-  private def api = new MusixMatch("741422372f12076301e6f5ef02c07862")
+  private def api = new MusixMatch(API_KEY.key)
 
   test("is able to find exact artist lada gaga") {
-    val artists = api.findExactArtists("lady gaga")
+    val artists = api.findExactArtistsByName("lady gaga")
     assert(artists.length > 0)
 
     for (artist <- artists) {
@@ -32,6 +32,26 @@ class ApiTest extends FunSuite {
 
   test("is able to get nine inch nails's albums") {
     val albums = api.getArtistAlbums("193")
+    assert(albums.length > 0)
+    println("Got " + albums.length + " albums")
+    for (album <- albums) {
+      println(album)
+    }
+
+  }
+
+  test("is able to get Madonna's albums") {
+    val albums = api.getArtistAlbums("61")
+    assert(albums.length > 0)
+    println("Got " + albums.length + " albums")
+    for (album <- albums) {
+      println(album)
+    }
+
+  }
+
+  test("is able to get Tori Amos's albums") {
+    val albums = api.getArtistAlbums("46")
     assert(albums.length > 0)
     println("Got " + albums.length + " albums")
     for (album <- albums) {

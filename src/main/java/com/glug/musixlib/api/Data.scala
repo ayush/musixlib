@@ -8,16 +8,18 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.glug.musicxlib.api
+package com.glug.musixlib.api
 
-import java.util.ArrayList
-import com.glug.musicxlib.util.ReflectiveToString
+import com.glug.musixlib.util.ReflectiveToString
+import java.util.{Date, ArrayList}
 
-/*
- * User: ayush
- * Date: 5/23/11
- * Time: 10:12 PM
- */
+/**
+  * Encapsulates attributes of an Artist
+  *
+  * @author Ayush Gupta
+  * @since 5/23/11
+  *
+  */
 class Artist extends ReflectiveToString {
   var id: String = null
   var mbid: String = null
@@ -25,16 +27,31 @@ class Artist extends ReflectiveToString {
   var alias: java.util.List[String] = new ArrayList[String]
 }
 
+/**
+  * Encapsulates attributes of an Album
+  *
+  * @author Ayush Gupta
+  * @since 5/23/11
+  *
+  */
 class Album extends ReflectiveToString {
   var id: String = null
   var name: String = null
   var artistId: String = null
   var artistName: String = null
-  var releaseDate: String = null
+  var releaseDate: Date = null
+  var releaseDateString: String = null
   var releaseType: String = null
   var coverart: String = null
 }
 
+/**
+  * Encapsulates attributes of a Track
+  *
+  * @author Ayush Gupta
+  * @since 5/23/11
+  *
+  */
 class Track extends ReflectiveToString {
   var id: String = null
   var mbid: String = null
@@ -51,6 +68,13 @@ class Track extends ReflectiveToString {
   var artistName: String = null
 }
 
+/**
+  * Encapsulates track lyrics
+  *
+  * @author Ayush Gupta
+  * @since 5/23/11
+  *
+  */
 class Lyrics extends ReflectiveToString {
   var id: String = null
   var body: String = null
@@ -58,4 +82,5 @@ class Lyrics extends ReflectiveToString {
   var scriptTrackingUrl: String = null
   var pixelTrackingUrl: String = null
   var copyright: String = null
+  var restricted: Boolean = false
 }

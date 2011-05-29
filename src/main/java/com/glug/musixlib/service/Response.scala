@@ -8,13 +8,14 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.glug.musicxlib.service
+package com.glug.musixlib.service
 
-import com.glug.musicxlib.util.ReflectiveToString
+import com.glug.musixlib.util.ReflectiveToString
 import scala.collection.JavaConversions._
-import java.util.ArrayList
-import com.glug.musicxlib.api.{Lyrics, Track, Album, Artist}
+import com.glug.musixlib.api.{Lyrics, Track, Album, Artist}
 import java.lang.RuntimeException
+import java.text.SimpleDateFormat
+import java.util.{Date, ArrayList}
 
 /*
 * User: ayush
@@ -43,7 +44,8 @@ class RawAlbum extends ReflectiveToString {
     a.artistId = this.artist_id
     a.artistName = this.artist_name
     a.name = this.album_name
-    a.releaseDate = this.album_release_date
+    a.releaseDate = Formatter.parse(this.album_release_date)
+    a.releaseDateString = Formatter.format(a.releaseDate)
     a.releaseType = this.album_release_type
     a.coverart = this.album_coverart_100x100
 
@@ -130,6 +132,7 @@ class RawTrackWrapper {
 
 class RawLyrics {
   var lyrics_id: String = null
+  var restricted: Number = null
   var lyrics_body: String = null
   var lyrics_language: String = null
   var script_tracking_url: String = null
@@ -145,6 +148,7 @@ class RawLyrics {
     l.scriptTrackingUrl = this.script_tracking_url
     l.pixelTrackingUrl = this.pixel_tracking_url
     l.copyright = this.lyrics_copyright
+    l.restricted = this.restricted == 1
 
     l
   }
@@ -205,6 +209,14 @@ class ServiceResponse {
     }
   }
 
+  def artist = {
+    if (message.body == null || message.body.artist == null)
+      null
+    else {
+      message.body.artist
+    }
+  }
+
   def albums = {
     if (message.body == null || message.body.album_list == null)
       null
@@ -216,6 +228,14 @@ class ServiceResponse {
       }
 
       albums
+    }
+  }
+
+  def album = {
+    if (message.body == null || message.body.album == null)
+      null
+    else {
+      message.body.album
     }
   }
 
@@ -239,4 +259,13 @@ class ServiceResponse {
     else
       message.body.lyrics.toLyrics
   }
+}
+
+object Formatter {
+  val df = new SimpleDateFormat("yyyy-MM-dd")
+  val df2 = new SimpleDateFormat("MMMMM yyyy")
+
+  def parse(s: String) = if (s == null) null else df.parse(s)
+
+  def format(d: Date) = if (d == null) "" else df2.format(d)
 }

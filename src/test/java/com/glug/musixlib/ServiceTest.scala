@@ -17,11 +17,11 @@ package com.glug.musixlib
  */
 
 import org.scalatest.FunSuite
-import com.glug.musicxlib.service._
+import com.glug.musixlib.service._
 class ServiceTest extends FunSuite {
 
   private def service: MusixMatchService = {
-    new MusixMatchService("741422372f12076301e6f5ef02c07862")
+    new MusixMatchService(API_KEY.key)
   }
 
 

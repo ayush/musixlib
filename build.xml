@@ -75,13 +75,13 @@
                 srcdir="${sources.dir}"
                 destdir="${docs.dir}"
                 deprecation="yes" unchecked="yes"
-                doctitle="Musicxmatch 0.1 library"
+                doctitle="Musicxmatch Library"
                 classpathref="build.classpath">
             <include name="**/*.scala"/>
         </scaladoc>
     </target>
 
-    <target name="publish" depends="clean, test"
+    <target name="publish" depends="clean, test, docs"
             description="--> compile test and publish this project in the local ivy repository">
         <property name="revision" value="${revision}"/>
         <ivy:publish artifactspattern="${distrib.dir}/[artifact].[ext]"

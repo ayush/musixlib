@@ -8,35 +8,13 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.glug.musicxlib.util
-
-import java.lang.StringBuffer
-import java.net.URLEncoder
-
+package com.glug.musixlib
 
 /*
  * User: ayush
- * Date: 5/23/11
- * Time: 9:51 AM
+ * Date: 5/29/11
+ * Time: 1:31 PM
  */
-trait AsQueryString {
-  def queryString(): String = {
-    val buff: StringBuffer = new StringBuffer()
-    val fields = this.getClass.getDeclaredFields
-    for (field <- fields) {
-
-      val value = this.getFieldValue(field.getName)
-      if (value != null && !value.toString.trim().equals("-1")) {
-        if (buff.length() > 0)
-          buff.append("&")
-        buff.append(field.getName + "=" + URLEncoder.encode(value.toString, "UTF-8"))
-      }
-
-    }
-
-    buff.toString
-  }
-
-  private def getFieldValue(fieldName: String) = this.getClass.getDeclaredMethod(fieldName).invoke(this)
-
+object API_KEY {
+  val key = "<your-key>"
 }
