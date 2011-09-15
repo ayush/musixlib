@@ -7,6 +7,7 @@
     <property name="base.build.dir" value="build"/>
     <property name="build.dir" value="build/core-classes"/>
     <property name="distrib.dir" value="build/distrib"/>
+    <property name="package.dir" value="build/distrib/package"/>
 
     <property name="test.lib.dir" value="lib/test"/>
     <property name="test.sources.dir" value="src/test/java"/>
@@ -90,6 +91,19 @@
                      status="release"
                      overwrite="true"/>
         <echo message="project ${ant.project.name} released with version ${revision}"/>
+    </target>
+
+    <target name="package" depends="clean, build, docs">
+        <mkdir dir="${package.dir}"/>
+
+        <copy file="${distrib.dir}/${ant.project.name}.jar" todir="${package.dir}"/>
+        <copy todir="${package.dir}/docs">
+            <fileset dir="${docs.dir}"/>
+        </copy>
+
+        <zip destfile="${ant.project.name}-${revision}.zip">
+            <fileset dir="${package.dir}" includes="**/*"/>
+        </zip>
     </target>
 
 

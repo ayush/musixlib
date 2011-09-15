@@ -22,7 +22,7 @@ class ApiTest extends FunSuite {
   private def api = new MusixMatch(API_KEY.key)
 
   test("is able to find exact artist lada gaga") {
-    val artists = api.findExactArtistsByName("lady gaga")
+    val artists = api.findExactArtistsByName("2Pac")
     assert(artists.length > 0)
 
     for (artist <- artists) {
@@ -78,7 +78,7 @@ class ApiTest extends FunSuite {
   }
 
   test("is able to call for track with no lyrics") {
-      val lyrics = api.getLyrics("855390")
+      val lyrics = api.getLyrics("14638844321321212")
       assert(lyrics == null)
 
   }

@@ -68,7 +68,7 @@ class MusixMatch(val apiKey: String) {
     if (albumsList == null)
       null
     else {
-      albumsList = albumsList.filter((a: Album) => a.releaseType.equals(ALBUM))
+      albumsList = albumsList.filter((a: Album) => ALBUM.equals(a.releaseType))
 
       albumsList = albumsList.sortWith((a: Album, b: Album) => (a.releaseDate != null && b.releaseDate == null) || (a.releaseDate != null && b.releaseDate != null && a.releaseDate.compareTo(b.releaseDate) >= 0))
 

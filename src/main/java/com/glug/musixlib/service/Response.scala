@@ -14,8 +14,8 @@ import com.glug.musixlib.util.ReflectiveToString
 import scala.collection.JavaConversions._
 import com.glug.musixlib.api.{Lyrics, Track, Album, Artist}
 import java.lang.RuntimeException
-import java.text.SimpleDateFormat
 import java.util.{Date, ArrayList}
+import java.text.{ParseException, SimpleDateFormat}
 
 /*
 * User: ayush
@@ -263,9 +263,15 @@ class ServiceResponse {
 
 object Formatter {
   val df = new SimpleDateFormat("yyyy-MM-dd")
+  val dfyear = new SimpleDateFormat("yyyy")
   val df2 = new SimpleDateFormat("MMMMM yyyy")
 
-  def parse(s: String) = if (s == null) null else df.parse(s)
+  def parse(s: String) = if (s == null) null else try {
+    df.parse(s)
+  }
+  catch {
+    case e: ParseException => dfyear.parse(s)
+  }
 
   def format(d: Date) = if (d == null) "" else df2.format(d)
 }

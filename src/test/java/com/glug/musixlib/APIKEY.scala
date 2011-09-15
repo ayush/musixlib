@@ -16,5 +16,6 @@ package com.glug.musixlib
  * Time: 1:31 PM
  */
 object API_KEY {
-  val key = "<your-key>"
+//  val key = "4c63b40d4e796a19dc69a832056f0ec6"
+  val key = "8370a49df65ccd634582737ab190464b"
 }
